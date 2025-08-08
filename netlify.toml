@@ -1,0 +1,19 @@
+[build]
+# Tell Netlify to run everything from the subfolder
+base = "project"
+# Build the Vite app
+command = "npm run build"
+# Directory to publish (relative to base)
+publish = "dist"
+
+[build.environment]
+# Ensure a modern Node version compatible with Vite
+NODE_VERSION = "20"
+
+[[redirects]]
+# SPA fallback so client-side routes work on refresh
+from = "/*"
+to = "/index.html"
+status = 200
+
+

@@ -1,0 +1,71 @@
+import { GalleryItem } from '../types/gallery';
+
+// Filenames present under /public/Badkamers
+const bathroomFilenames: string[] = [
+  'IMG_2753.JPEG',
+  'IMG_7604.JPG',
+  'IMG_5944.JPEG',
+  'IMG_4620.JPEG',
+  'IMG_5947.JPEG',
+  'IMG_3734.JPEG',
+  'IMG_6884.JPEG',
+  'IMG_3163.JPEG',
+  'IMG_6757.JPEG',
+  'IMG_6503.JPEG',
+  'IMG_4172.JPEG',
+  'IMG_2749.JPEG',
+  'IMG_0887.JPEG',
+  'IMG_2740.JPEG',
+  'IMG_4170.JPEG',
+  'IMG_2738.JPEG',
+  'IMG_4373.JPEG',
+  'IMG_6756.JPEG',
+  'IMG_0839.JPEG',
+  'IMG_6755.JPEG',
+  'IMG_5391.JPEG',
+  'IMG_5945.JPEG',
+  'IMG_1020.JPEG',
+  'IMG_3161.JPEG',
+  'IMG_4621.JPEG',
+  'IMG_0886.JPEG',
+  'IMG_2739.JPEG',
+  'IMG_4171.JPEG',
+  'IMG_3164.JPEG',
+  'IMG_1031.JPEG',
+  'IMG_6125.JPEG',
+  'IMG_7428.JPG',
+  'IMG_5420.JPEG',
+  'IMG_6759.JPEG',
+  'IMG_6885.JPEG',
+  'IMG_6512.JPEG',
+  'IMG_0865.JPEG',
+  'IMG_4174.JPEG',
+  'IMG_4173.JPEG',
+  'IMG_6886.JPEG',
+  'IMG_7473.JPG',
+  'IMG_7408.JPG',
+  'IMG_6511.JPEG',
+  'IMG_2752.JPEG',
+  'IMG_4923.JPEG',
+  'IMG_5946.JPEG',
+  'IMG_3843.JPEG',
+  'IMG_6881.JPEG',
+  'IMG_4922.JPEG',
+  'IMG_6882.JPEG',
+  'IMG_4864.JPEG',
+  'IMG_1030.JPEG',
+  'IMG_7602.JPG',
+  'IMG_4862.JPEG',
+  'IMG_2751.JPEG'
+];
+
+export const bathroomLocalItems: GalleryItem[] = bathroomFilenames.map((filename, index) => ({
+  id: `bathroom-local-${index + 1}`,
+  title: 'Badkamer',
+  category: 'bathroom',
+  image_path: `/Badkamers/${filename}`,
+  // Use current time to ensure predictable ordering (newest first)
+  created_at: new Date().toISOString()
+}));
+
+

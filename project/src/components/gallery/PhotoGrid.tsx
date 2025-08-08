@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { GalleryItem } from '../../types/gallery';
+import LazyImage from './LazyImage';
 
 interface PhotoGridProps {
   items: GalleryItem[];
 }
 
 export default function PhotoGrid({ items }: PhotoGridProps) {
+  const [visibleCount, setVisibleCount] = useState<number>(10);
+
+  useEffect(() => {
+    // Reset on items change
+    setVisibleCount(10);
+  }, [items]);
+
+  const visibleItems: GalleryItem[] = items.slice(0, visibleCount);
   if (items.length === 0) {
     return (
       <div className="text-center py-8 text-off-white">
@@ -16,22 +25,16 @@ export default function PhotoGrid({ items }: PhotoGridProps) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {items.map((item) => (
+      {visibleItems.map((item) => (
         <div 
           key={item.id} 
           className="aspect-square bg-background/40 rounded-xl overflow-hidden relative group"
         >
-          <img 
-            src={item.imageUrl} 
+          <LazyImage
+            src={item.imageUrl as string}
             alt={item.title}
             className="w-full h-full object-cover"
-            loading="lazy"
-            decoding="async"
-            onError={(e) => {
-              console.error(`Image load error for ${item.image_path}`);
-              // Fallback to a default image from the Badkamers folder
-              e.currentTarget.src = '/Badkamers/IMG_2752.JPEG';
-            }}
+            fallbackSrc="/Badkamers/IMG_2752.JPEG"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <div className="absolute bottom-0 left-0 p-4">
@@ -45,6 +48,14 @@ export default function PhotoGrid({ items }: PhotoGridProps) {
           </div>
         </div>
       ))}
+      {visibleCount < items.length && (
+        <div className="col-span-full flex justify-center mt-4">
+          <button onClick={() => setVisibleCount((c) => Math.min(c + 10, items.length))}
+                  className="px-6 py-2 rounded-full text-off-white hover:bg-primary-green/10">
+            Laad meer
+          </button>
+        </div>
+      )}
     </div>
   );
 }

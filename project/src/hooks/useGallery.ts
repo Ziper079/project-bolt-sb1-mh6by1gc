@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
 import { GalleryItem } from '../types/gallery';
+import { bathroomLocalItems } from '../data/bathroomLocal';
 
 export function useGallery(category: string = 'all') {
   const [items, setItems] = useState<GalleryItem[]>([]);
@@ -8,45 +8,26 @@ export function useGallery(category: string = 'all') {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchGalleryItems() {
-      try {
-        setLoading(true);
-        
-        let query = supabase
-          .from('gallery')
-          .select('*')
-          .order('created_at', { ascending: false });
+    try {
+      setLoading(true);
 
-        if (category !== 'all') {
-          query = query.eq('category', category);
-        }
+      const shouldShowBathroom = category === 'bathroom' || category === 'all';
+      const localOnly: GalleryItem[] = shouldShowBathroom ? bathroomLocalItems : [];
 
-        const { data, error } = await query;
+      const processedItems = localOnly.map(item => ({
+        ...item,
+        imageUrl: item.image_path
+      }));
 
-        if (error) {
-          throw new Error(`Database query error: ${error.message}`);
-        }
-
-        if (!data) {
-          throw new Error('No data returned from the database');
-        }
-
-        // Process items - use the image_path directly since it now contains the correct public path
-        const processedItems = data.map(item => ({
-          ...item,
-          imageUrl: item.image_path
-        }));
-
-        setItems(processedItems);
-      } catch (err) {
-        console.error('Gallery fetch error:', err);
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
+      setItems(processedItems);
+      setError(null);
+    } catch (err) {
+      console.error('Local gallery load error:', err);
+      setError('Er is een fout opgetreden bij het laden van lokale afbeeldingen.');
+      setItems([]);
+    } finally {
+      setLoading(false);
     }
-
-    fetchGalleryItems();
   }, [category]);
 
   return { items, loading, error };
