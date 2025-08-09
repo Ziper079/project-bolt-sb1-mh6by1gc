@@ -1,5 +1,5 @@
 import React from 'react';
-import AboutCTASection from '../about/AboutCTASection';
+import Footer from './Footer';
 import { useScrollToTop } from '../../hooks/useScrollToTop';
 import { useLocation } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ export default function Layout({ children }: LayoutProps) {
       <main className="flex-grow">
         {children}
       </main>
-      {showFooter && <AboutCTASection />}
+      {showFooter && <Footer />}
     </div>
   );
 }

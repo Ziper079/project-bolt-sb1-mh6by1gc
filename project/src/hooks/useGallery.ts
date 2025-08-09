@@ -8,26 +8,41 @@ export function useGallery(category: string = 'all') {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    try {
-      setLoading(true);
+    const loadGallery = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-      const shouldShowBathroom = category === 'bathroom' || category === 'all';
-      const localOnly: GalleryItem[] = shouldShowBathroom ? bathroomLocalItems : [];
+        // Add a small delay to prevent too frequent updates
+        await new Promise(resolve => setTimeout(resolve, 100));
 
-      const processedItems = localOnly.map(item => ({
-        ...item,
-        imageUrl: item.image_path
-      }));
+        const shouldShowBathroom = category === 'bathroom' || category === 'all';
+        
+        if (!shouldShowBathroom) {
+          setItems([]);
+          return;
+        }
 
-      setItems(processedItems);
-      setError(null);
-    } catch (err) {
-      console.error('Local gallery load error:', err);
-      setError('Er is een fout opgetreden bij het laden van lokale afbeeldingen.');
-      setItems([]);
-    } finally {
-      setLoading(false);
-    }
+        // Process items more efficiently
+        const processedItems = bathroomLocalItems.map(item => ({
+          ...item,
+          imageUrl: item.image_path
+        }));
+
+        // Randomize order for better user experience
+        const shuffledItems = [...processedItems].sort(() => Math.random() - 0.5);
+        
+        setItems(shuffledItems);
+      } catch (err) {
+        console.error('Local gallery load error:', err);
+        setError('Er is een fout opgetreden bij het laden van lokale afbeeldingen.');
+        setItems([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadGallery();
   }, [category]);
 
   return { items, loading, error };

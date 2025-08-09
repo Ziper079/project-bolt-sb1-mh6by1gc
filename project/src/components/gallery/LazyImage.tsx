@@ -11,6 +11,7 @@ export default function LazyImage({ src, alt, className, fallbackSrc = '/exact-m
   const [currentSrc, setCurrentSrc] = useState<string>(src);
   const [isInView, setIsInView] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [isDecoded, setIsDecoded] = useState<boolean>(false);
   const [attempt, setAttempt] = useState<number>(0);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -27,7 +28,7 @@ export default function LazyImage({ src, alt, className, fallbackSrc = '/exact-m
           }
         });
       },
-      { root: null, rootMargin: '200px', threshold: 0.01 }
+      { root: null, rootMargin: '300px', threshold: 0.01 }
     );
 
     observer.observe(node);
@@ -43,10 +44,22 @@ export default function LazyImage({ src, alt, className, fallbackSrc = '/exact-m
       try {
         const img = new Image();
         img.src = srcToLoad;
-        await img.decode?.();
+        
+        // Wait for the image to load completely
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+        });
+        
+        // Then decode it for smooth display
+        if (img.decode) {
+          await img.decode();
+        }
+        
         if (!cancelled) {
           setCurrentSrc(srcToLoad);
           setIsLoaded(true);
+          setIsDecoded(true);
         }
       } catch (err) {
         if (cancelled) return;
@@ -80,6 +93,7 @@ export default function LazyImage({ src, alt, className, fallbackSrc = '/exact-m
         // Final fallback
         setCurrentSrc(fallbackSrc);
         setIsLoaded(true);
+        setIsDecoded(true);
       }
     };
 
@@ -92,17 +106,20 @@ export default function LazyImage({ src, alt, className, fallbackSrc = '/exact-m
 
   return (
     <div ref={containerRef} className="w-full h-full">
-      {!isLoaded && (
-        <div className="w-full h-full animate-pulse bg-background/50" />
+      {(!isLoaded || !isDecoded) && (
+        <div className="w-full h-full animate-pulse bg-gradient-to-br from-background/30 to-background/60 flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-primary-green/30 border-t-primary-green rounded-full animate-spin"></div>
+        </div>
       )}
-      {isLoaded && (
+      {isLoaded && isDecoded && (
         <img
           src={currentSrc}
           alt={alt}
-          className={className}
+          className={`${className} transition-opacity duration-300`}
           loading="lazy"
           decoding="async"
           fetchPriority="low"
+          style={{ opacity: 1 }}
         />
       )}
     </div>

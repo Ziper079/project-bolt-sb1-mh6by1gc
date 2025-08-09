@@ -7,11 +7,12 @@ interface PhotoGridProps {
 }
 
 export default function PhotoGrid({ items }: PhotoGridProps) {
-  const [visibleCount, setVisibleCount] = useState<number>(10);
+  // Start with even fewer images for better initial performance
+  const [visibleCount, setVisibleCount] = useState<number>(4);
 
   useEffect(() => {
-    // Reset on items change
-    setVisibleCount(10);
+    // Reset on items change - start with 4 images
+    setVisibleCount(4);
   }, [items]);
 
   const visibleItems: GalleryItem[] = items.slice(0, visibleCount);
@@ -24,7 +25,7 @@ export default function PhotoGrid({ items }: PhotoGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
       {visibleItems.map((item) => (
         <div 
           key={item.id} 
@@ -33,7 +34,7 @@ export default function PhotoGrid({ items }: PhotoGridProps) {
           <LazyImage
             src={item.imageUrl as string}
             alt={item.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
             fallbackSrc="/Badkamers/IMG_2752.JPEG"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -49,10 +50,12 @@ export default function PhotoGrid({ items }: PhotoGridProps) {
         </div>
       ))}
       {visibleCount < items.length && (
-        <div className="col-span-full flex justify-center mt-4">
-          <button onClick={() => setVisibleCount((c) => Math.min(c + 10, items.length))}
-                  className="px-6 py-2 rounded-full text-off-white hover:bg-primary-green/10">
-            Laad meer
+        <div className="col-span-full flex justify-center mt-8">
+          <button 
+            onClick={() => setVisibleCount((c) => Math.min(c + 4, items.length))}
+            className="px-8 py-3 rounded-full bg-primary-green/20 text-primary-green hover:bg-primary-green hover:text-black transition-all duration-300 font-medium"
+          >
+            Laad meer foto's ({Math.min(items.length - visibleCount, 4)})
           </button>
         </div>
       )}

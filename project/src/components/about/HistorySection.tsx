@@ -22,9 +22,11 @@ export default function HistorySection() {
           
           <div className="relative h-[500px] rounded-2xl overflow-hidden">
             <img 
-              src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&q=80" 
-              alt="Ons vakmanschap" 
+              src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&q=80" 
+              alt="Keukenrenovatie - Exact Montage geschiedenis" 
               className="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent"></div>
           </div>

@@ -29,7 +29,14 @@ export default function GalleryPage() {
           Terug naar home
         </Link>
 
-        <h1 className="text-4xl font-bold text-primary-green mb-8">Fotoboek</h1>
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-primary-green mb-2">Fotoboek</h1>
+          {!loading && items.length > 0 && (
+            <p className="text-off-white/80">
+              {items.length} foto{items.length !== 1 ? "'s" : ""} beschikbaar
+            </p>
+          )}
+        </div>
         
         <div className="flex flex-wrap gap-4 mb-12">
           {categories.map(category => (
@@ -48,8 +55,9 @@ export default function GalleryPage() {
         </div>
 
         {loading && (
-          <div className="flex justify-center items-center min-h-[400px]">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-green"></div>
+          <div className="flex flex-col justify-center items-center min-h-[400px] space-y-4">
+            <div className="animate-spin rounded-full h-12 w-12 border-2 border-primary-green/30 border-t-primary-green"></div>
+            <p className="text-off-white/80 text-lg">Foto's laden...</p>
           </div>
         )}
         
